@@ -30,6 +30,7 @@
 #endif
 
 exception_t handleSyscall(syscall_t syscall);
+exception_t handleHvcCall(word_t ipa_addr);
 exception_t handleInterruptEntry(void);
 exception_t handleUnknownSyscall(word_t w);
 exception_t handleUserLevelFault(word_t w_a, word_t w_b);

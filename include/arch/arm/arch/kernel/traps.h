@@ -25,6 +25,9 @@ void VISIBLE NORETURN restore_user_context(void);
 void c_handle_syscall(word_t cptr, word_t msgInfo, syscall_t syscall)
 VISIBLE SECTION(".vectors.text");
 
+void c_handle_hvc_call(word_t ipa_addr)
+VISIBLE SECTION(".vectors.text");
+
 #ifdef CONFIG_FASTPATH
 void c_handle_fastpath_call(word_t cptr, word_t msgInfo)
 VISIBLE SECTION(".vectors.text");

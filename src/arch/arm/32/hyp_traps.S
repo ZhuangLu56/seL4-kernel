@@ -129,7 +129,7 @@ BEGIN_FUNC(arm_hyp_trap)
     cmp lr, #(HSREC_SVC << HSREC_SHIFT)
     beq arm_syscall
     cmp lr, #(HSREC_HVC << HSREC_SHIFT)
-    beq arm_syscall
+    beq arm_hvc_call
     cmp lr, #(HSREC_PREFETCH_ABORT << HSREC_SHIFT)
     beq arm_prefetch_abort
     cmp lr, #(HSREC_DATA_ABORT << HSREC_SHIFT)
@@ -171,6 +171,13 @@ BEGIN_FUNC(arm_syscall)
     mov r2, r7
     b c_handle_syscall
 END_FUNC(arm_syscall)
+
+BEGIN_FUNC(arm_hvc_call)
+    mrs lr, elr_hyp
+    sub lr, lr, #4
+    PUSH_STACK
+    b c_handle_hvc_call
+END_FUNC(arm_hvc_call)
 
 /*********************************
  *** Traps taken from HYP mode ***

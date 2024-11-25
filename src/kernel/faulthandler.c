@@ -54,7 +54,7 @@ void handleFault(tcb_t *tptr)
 {
     exception_t status;
     seL4_Fault_t fault = current_fault;
-
+    
     status = sendFaultIPC(tptr);
     if (status != EXCEPTION_NONE) {
         handleDoubleFault(tptr, fault);

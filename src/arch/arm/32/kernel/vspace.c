@@ -1275,6 +1275,15 @@ exception_t handleVMFault(tcb_t *thread, vm_fault_type_t vm_faultType)
     }
 }
 
+exception_t handleVMHvc(tcb_t *thread, word_t ipa_addr) {
+    word_t pc, fault;
+    pc = getRestartPC(thread);
+    fault = getHSR() & 0x3ffffff;
+    pc = (addressTranslateS1(pc) & ~MASK(PAGE_BITS)) | (pc & MASK(PAGE_BITS));
+    current_fault = seL4_Fault_VMFault_new(pc, fault, false);
+    return EXCEPTION_FAULT;
+}
+
 void deleteASIDPool(asid_t asid_base, asid_pool_t *pool)
 {
     unsigned int offset;

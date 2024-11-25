@@ -514,6 +514,26 @@ static void handleYield(void)
 #endif
 }
 
+exception_t handleHvcCall(word_t ipa_addr)
+{   
+#ifdef CONFIG_ARM_HYPERVISOR_SUPPORT
+    MCS_DO_IF_BUDGET({
+        exception_t status = handleVMHvc(NODE_STATE(ksCurThread), ipa_addr);
+        if (status != EXCEPTION_NONE)
+        {   
+            handleFault(NODE_STATE(ksCurThread));
+
+        }
+    })
+#else
+    printf("hyp is not support, hvc do nothing!");
+#endif
+    schedule();
+    activateThread();
+
+    return EXCEPTION_NONE;
+}
+
 exception_t handleSyscall(syscall_t syscall)
 {
     exception_t ret;

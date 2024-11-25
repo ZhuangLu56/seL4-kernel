@@ -101,7 +101,7 @@ static inline void NORETURN c_handle_vm_fault(vm_fault_type_t type)
 }
 
 void VISIBLE NORETURN c_handle_data_fault(void)
-{
+{   
     c_handle_vm_fault(seL4_DataFault);
 }
 
@@ -143,6 +143,22 @@ void NORETURN slowpath(syscall_t syscall)
         handleSyscall(syscall);
     }
 
+    restore_user_context();
+    UNREACHABLE();
+}
+
+void VISIBLE NORETURN c_handle_hvc_call(word_t ipa_addr)
+{
+    NODE_LOCK_SYS;
+
+    c_entry_hook();
+
+    #ifdef TRACK_KERNEL_ENTRIES
+        ksKernelEntry.path = Entry_VMFault;
+        ksKernelEntry.word = getRegister(NODE_STATE(ksCurThread), NextIP);
+        ksKernelEntry.is_fastpath = false;
+    #endif
+    handleHvcCall(ipa_addr);
     restore_user_context();
     UNREACHABLE();
 }
